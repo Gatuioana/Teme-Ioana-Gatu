@@ -1,0 +1,177 @@
+<html>
+<head>
+	<script>
+		function isDigits(str){
+			for(var i=0;i<str.length;i++){
+				if(str[i]<"0" ||str[i]>"9"){
+					return false;
+				}
+			}
+			return true;
+		}
+		function valideaza(elem,event){
+			var numeEl = document.querySelector('[name="nume"]');
+			var telefonEl = document.querySelector('[name="telefon"]');
+		
+			var nume = numeEl.value;
+			var telefon = telefonEl.value;
+			
+			if(nume.length<3){
+				numeEl.classList.add("invalid");
+				event.preventDefault();
+			}else{
+				numeEl.classList.remove("invalid");
+			}
+			
+			if(telefon.length!==10 || telefon.indexOf("07")!==0 || !isDigits(telefon)){
+				telefonEl.classList.add("invalid");
+				event.preventDefault();
+			}else{
+				telefonEl.classList.remove("invalid");
+			}
+		}
+		function noDigits(elem,event){
+			if(event.key>="0" && event.key<="9"){
+				event.preventDefault();
+			}
+		}
+
+		function enter(event){
+			if (event.keyCode === 13) {
+				valideaza();
+			}
+		}
+
+		var persoane = [
+		{
+			nume:"Ion",
+			telefon:"0747027678",
+			modifica: "Modifica",
+			sterge:"Sterge"
+		}
+		];
+
+
+
+        function add(){
+		var nume = document.querySelector('[name="nume"]').value;
+		var telefon = document.querySelector('[name="telefon"]').value;
+		var modifica="Modifica";
+		var sterge="Sterge";
+
+		}
+
+		var newPersoane={
+			nume,
+			telefon,
+			modifica,
+			sterge
+		};
+		persoane.push(newPersoane);
+		draw();
+	}
+
+	function draw(){
+		var str = ``;
+		for(var i=0;i<persoane.length;i++){
+			str += `
+			<tr>
+		
+				<td>${persoane[i].nume}</td>
+				<td>${persoane[i].telefon}</td>
+				<td>${persoane[i].modifica}
+				<td>${persoane[i].sterge}</td>
+			</tr>
+			`
+			
+		}
+		document.querySelector("table>tbody").innerHTML=str;
+	}
+	      
+
+	</script>
+	<style>
+		.hidden{
+			display:none;
+		}
+		.invalid{
+			border-color:red;
+		}
+        #tabel{
+			border-collapse:collapse;
+			display: inline;
+		}
+
+		td,th {
+    	padding: 10px;
+		text-align: center;
+		}
+		h1 {text-align: center; }
+
+		#primul {
+			height:100px;
+			width: 600px;
+			background-color:#edd312;
+			border-radius: 20px;
+			margin: 20px;
+			display:inline-block;
+		
+		
+		}
+
+		
+		#aldoilea {
+			height:auto;
+			width: 600 px;
+			background-color:#edd312;
+			border-radius: 20px;
+			margin: 20px;
+		
+		}
+
+		body {
+    
+    	text-align: center;
+    	font-size: 15px;
+    	margin:15px;
+    	padding: 5px;
+    	box-sizing: border-box;
+    	padding: 8px 16px;
+    	text-align: center;
+
+		}
+
+	</style>
+</head>
+<body onload="draw();">
+<h1> Agenda</h1>
+<div id="primul">
+	<form onsubmit="valideaza(this,event);">
+				<label>
+					<span> <b>Nume: </b> </span>
+					<input type="text" name="nume" onkeydown="noDigits(this,event);" />
+                </label>
+				<label for="telefon"><b>Telefon:</b> </label>
+                <input id="telefon" type="text" name="telefon" placeholder='07-- --- ---' onkeypress="enter(event)"/>
+				<br>
+				<div>
+                <input type="submit" style="margin-top: 10px; background-color: blue; color: white; border-radius: 5px;" name="submit" value="ADAUGA CONTACT" onclick="add();"/>
+				</div>
+		
+		
+    </form>
+    
+</div>
+    <div id="aldoilea">
+        <table id="tabel">
+		<thead>
+        <th>Nume</th>
+        <th>Telefon</th>
+		<th>Modifica</th>
+		<th>Sterge</th>
+		</thead>
+</table>
+    </div>
+	
+</body>
+</html>
