@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                background-color: rgb(186, 243, 52);
+            }
+
+            button{ 
+                background-color: green;
+                color: white;
+
+            }
+
+        </style>
+        <script>
+            var abc=null;
+            let elevi = [];
+            class Elev{
+			constructor(nume){
+				this.nume=nume;
+				this.note=[];
+			}
+			
+			medie(){
+				if(this.note.length===0){
+					return "";
+				}
+				var s = 0;
+				for(var i=0;i<this.note.length;i++){
+					s+=this.note[i];
+				}
+				return s/this.note.length;
+			}
+			addNota(n){
+				this.note.push(parseInt(n));
+			}
+			sortNote(){
+				this.note.sort(function(a,b){return a-b});
+			}
+			sortNoteDesc(){
+				this.note.sort(function(a,b){return b-a});
+			}
+		}
+      
+        function add(){
+			event.preventDefault();
+			var Elnume = document.querySelector('[name="nume"]').value;
+            if(Elnume.length<1){
+                 return;
+            }
+			elevi.push(new Elev(Elnume));
+			document.querySelector('[name="nume"]').value = "";      
+			draw();    
+        }
+
+        function toggleNote(visible){
+            let noteElement = document.getElementById("lista_note_wrapper");
+            let eleviElement = document.getElementById("lista_elevi_wrapper");
+            if(visible){
+                eleviElement.style.cssFloat = "left";
+                noteElement.style.cssFloat = "left";
+                noteElement.style.display = "block";
+                eleviElement.style.width = "49%";
+                noteElement.style.width = "49%";
+            } else{
+                eleviElement.style.cssFloat = "none";
+                eleviElement.style.width = "100%";
+                noteElement.style.display = "none";
+            }
+        }
+        function veziNoteElev(i){
+            toggleNote(true);
+            var elevPaginaNote = document.querySelector("#stud-name");
+            elevPaginaNote.innerText = elevi[i].nume;
+            
+            var elev = i;
+            var adaugaNota = document.querySelector("#addNota");
+            adaugaNota.addEventListener("click", function(){
+            addNota(elev);
+            })
+            draw();          
+        }
+
+        function addNota(i){
+            event.preventDefault();
+            var Elnota = document.querySelector('[name="nume1"]').value;
+            if(Elnota.length<1){
+                return;
+            }
+            elevi[i].addNota(Elnota);
+            drawAddNota(i);
+            document.querySelector('[name="nume1"]').value = "";
+            draw();
+        }
+        
+        function draw(){
+		        var str = '';
+		        for(var i=0;i<elevi.length;i++){
+			    str += `
+			    <tr>
+		            <td>${elevi[i].nume}</td>
+                    <td>${elevi[i].medie()}</td>
+                    <td>
+                        <div>
+                            <button onclick="veziNoteElev(${i})">Vezi note</button>
+                        </div>
+                    </td>
+		
+			    </tr>
+			    `;
+			
+		        }
+				
+               
+		    document.querySelector("table>tbody").innerHTML=str;
+            document.querySelector("p").style.display = "none";
+        }
+
+        function drawAddNota(idElev){
+            window.abc=elevi[idElev];
+            var str = '';
+            for(var i=0;i<abc.note.length;i++){
+                str += `
+                <tr>
+                    <td>${abc.note[i]}</td>
+                </tr>
+                `;  
+            }  
+
+            
+            document.querySelector("#tabelNote>tbody").innerHTML=str;
+            document.querySelector("#nicioNota").style.display = "none";
+        }
+
+	    function enter(event){
+			if (event.keyCode === 13) {
+				add();
+			}
+        }
+
+        function enter1(event){
+			if (event.keyCode === 13) {
+                for( var i=0;i<=abc.note.length;i++){
+				addNota(i);
+            }
+        }
+        }
+
+
+        function sortNote1(){
+                    abc.sortNote(); 
+                    drawAddNota(abc);
+        } 
+
+        function sortNoteDesc1(){
+                    abc.sortNoteDesc(); 
+                    drawAddNota(abc);
+        }   
+
+
+
+        
+        </script>
+    </head>
+    <body>
+        <div id="lista_elevi_wrapper">
+                <h2>Lista elevi</h2>
+                <form style="border:1px solid black text-align:center;" >
+                        <label>Nume:<input type="text" name="nume" onkeypress="enter(event);"/></label>
+                        <input type="submit" onclick="add();" value="Adauga elev"/>
+                    </form>
+    
+                <br>   
+                <div style="border: 1px solid black"> 
+                <table style="width: 100%;">        
+                        <thead>
+                                <button onclick="sortMedie();">Sorteaza ascendent dupa medie note</button><br>
+
+                                <button onclick="sortMedieDesc();">Sorteaza descendent dupa medie note</button> 
+                                <br> 
+                        <p>Niciun elev adaugat</p>
+                        <tr>
+                            <td style="width:30%;"><b>Nume</b></td>
+                            <td style="width:30%;"><b>Medie Note</b></td>
+                            <td style="width:30%;"></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+
+        <div id="lista_note_wrapper" style='display:none;'>
+            <button onclick="toggleNote(false);">Ascunde notele</button>
+            <h2>Note elev <span id='stud-name'></span></h2>
+            <form style="border:1px solid black">
+                    <label>Nota:<input type="number" name="nume1"  onkeypress="enter1(event);"/></label>
+                    <button id='addNota'>Adauga nota </button>
+            </form>
+            <br>   
+            <div style="border: 1px solid black"> 
+                <table id="tabelNote" style="width: 100%;">        
+                        <thead>
+                                <button onclick="sortNote1();">Sorteaza ascendent dupa note</button><br>
+                                <button onclick="sortNoteDesc1();">Sorteaza descendent dupa note</button><br> 
+                        <p id="nicioNota">Nicio nota adaugata</p>
+                        <tr>
+                            <td style="text-align:center">Nota</td>
+                        </tr>
+                        </thead>
+                        <tbody style="text-align:center"> </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
+
