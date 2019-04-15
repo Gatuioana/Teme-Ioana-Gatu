@@ -1,0 +1,76 @@
+{
+	"produse":{
+		"0":{
+			"nume":"Samsung Galaxy S9",
+			"imagine":"./124911_1_.jpg",
+			"pret":1000,
+			"descriere":"Camera care face fotografii frumoase in orice conditii de lumina.",
+			"stoc":10
+		},
+		"1":{
+			"nume":"Huawei Y5 2018, 16GB",
+			"imagine":"./y5_black_11_.jpg",
+			"pret":547,
+			"descriere":"Cu un raport de ultra-inalta rezolutie de 5,45 HD + (1440 x 720),montat intr-un cadru minimalist, veti simti ca si cum ati tine o fereastra dintr-o alta lume in mana.",
+			"stoc":6
+		},
+		"2":{
+			"nume":"Allview Soul X5, 32GB, 4G",
+			"imagine":"./mt9e2aaa_1_.jpg",
+			"pret":749.99,
+			"descriere":"Soul X5 te atrage intr-un univers fermecat cu culori vii si stralucitoare. Prin intermediul display-ului IPS InCell de 5.86” Notch, vei fi transpus intr-o lume captivanta care te va fascina de la prima privire. Datorita raportului 19:9 afisajul vizual este incontestabil mai mare si vei beneficia de o experienta vizuala uluitoare. ",
+			"stoc":13
+		},
+
+		"3":{
+			"nume":"Allview Soul X5, 32GB, 4G",
+			"imagine":"./1_3__1.jpg",
+			"pret":749.99,
+			"descriere":"Soul X5 te atrage intr-un univers fermecat cu culori vii si stralucitoare. Prin intermediul display-ului IPS InCell de 5.86” Notch, vei fi transpus intr-o lume captivanta care te va fascina de la prima privire. Datorita raportului 19:9 afisajul vizual este incontestabil mai mare si vei beneficia de o experienta vizuala uluitoare. ",
+			"stoc":13
+		},
+
+		"4":{
+			"nume":"Apple iPhone Xs, 64GB",
+			"imagine":"./mt9e2aaa_1_.jpg",
+			"pret":5749.99,
+			"descriere":"Super Retina in doua dimensiuni - inclusiv cel mai mare ecran vazut vreodata la un iPhone. Face ID si mai rapid. Cel mai inteligent si mai puternic cip intalnit la un smartphone. Si un sistem revolutionar de camere duale. iPhone XS reprezinta tot ceea ce iubesti la iPhone. Acum, la un nivel extrem.",
+			"stoc":15
+		},
+
+		"5":{
+			"nume":"Telefon fix cu fir Panasonic KX-TS500FXW",
+			"imagine":"./129137_1.jpeg",
+			"pret":49.99,
+			"descriere":" Cel mai inteligent si mai puternic cip intalnit la un smartphone. Acum, la un nivel extrem.",
+			"stoc":100
+		},
+		"6":{
+			"nume":"Xperia L3 32GB LTE",
+			"imagine":"./xperia-l3-32gb-lte-4g-argintiu-3gb-ram_10058728_1_1553868659.jpg",
+			"pret":1249.99,
+			"descriere":" Informatii despre produs<br>Acest produs ajunge la tine in cel mai scurt timp de la distribuitori oficiali din toata lumea. Ambalajul este intr-o limba de circulatie mondiala, inclusiv chineza. Se poate folosi liber in orice retea mobila, nefiind codat. Meniul e presetat in limba engleza si are toate limbile internationale. Limba romana e optionala, la alegerea producatorului. Imaginile sunt cu titlu informativ. Produsul ar putea sa difere fata de imaginea afisata pe site.",
+			"stoc":20
+		},
+
+		"7":{
+			"nume":"Galaxy A50 Dual Sim 128GB",
+			"imagine":"./galaxy-a50-dual-sim-128gb-lte-4g-albastru-6gb-ram_10058554_1_1553587311.jpg",
+			"pret":1289.99,
+			"descriere":"Ce este in cutie<br>Produsul tau este insotit de : un incarcator original pentru una dintre prizele internationale, un adaptor gratuit pentru priza romaneasca, o garantie standard de 24 de luni asigurata de partenerul nostru Service Return, un manual de instructiuni in limba romana si un multumesc din partea noastra. ",
+			"stoc":21
+		}
+
+
+
+
+	},
+	"cos":{
+		"asd":{
+			"nume":"",
+			"imagine":"",
+			"pret":"",
+			"cantitate":""
+		}
+	}
+}

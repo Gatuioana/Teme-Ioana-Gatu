@@ -1,0 +1,223 @@
+<html>
+<head>
+	
+		<link rel="stylesheet" type="text/css" href="magazin.css">
+<script>
+
+
+     var lista=[];
+			var x=0;
+		
+		function loading(){
+			let loader = document.querySelector("#loader");
+			if(loader.style.display === "none"){
+				loader.style.display = "block";
+			} else {
+				loader.style.display = "none";
+			}
+		}
+
+		function get(){
+			loading();
+			fetch('https://awesome-c1c34.firebaseio.com/.json')
+			  .then(response => response.json())
+			  .then(data => {
+					lista=data;
+					draw();
+					loading();
+			  })
+		}
+
+
+
+		// function addinlocal(i){
+			
+		// 	if (typeof(Storage) !== "undefined") {
+		// 		var el = {};
+		// 		el.nume = lista.produse[i].nume;
+		// 		el.imagine = lista.produse[i].imagine;
+		// 		el.cantitate = 1;
+		// 		el.pret = parseInt(lista.produse[i].pret);
+  
+  	// 			localStorage.setItem(i,JSON.stringify(el));
+		// 			showMessage("Produsul a fost adaugat in cos");
+		// 			document.getElementById("nr").classList.remove("hidden");
+		// 			x++;
+		// 			document.getElementById("nr").innerText=x;
+					
+				
+		// 		} else {
+  	// 		alert("eroare");
+		// 	}
+		// 	}
+		
+
+		function addinlocal(i){
+			
+			
+			if (typeof(Storage) !== "undefined") {
+				let cosJson = localStorage.getItem("cos");
+				if(cosJson === undefined || cosJson == null){
+					cosJson = "{}";	
+				}
+				let cos = JSON.parse(cosJson);
+
+				let el = {};
+				el.nume = lista.produse[i].nume;
+				el.imagine = lista.produse[i].imagine;
+				el.cantitate = 1;
+				el.pret = parseInt(lista.produse[i].pret);
+				el.id = i;
+
+
+				if(cos[i] !== undefined){
+			
+					cos[i].cantitate ++;
+					if(cos[i].cantitate > parseInt(lista.produse[i].stoc)){
+						cos[i].cantitate = parseInt(lista.produse[i].stoc);
+					}
+				} else {
+					cos[i] = el;
+				}
+				for(var i in cos){
+					if(!cos.hasOwnProperty(i)){
+					continue;
+				}
+				 x=x+cos[i].cantitate;
+				}
+				document.getElementById("nr").classList.remove("hidden");
+				document.getElementById("nr").innerText=x;
+  			localStorage.setItem("cos", JSON.stringify(cos)); //il face din obiect Json
+				showMessage("Produsul a fost adaugat in cos");
+			} else {
+  			alert("eroare");
+			}
+		}
+		
+
+			function showMessage(msg){
+			let elMsg = document.getElementById("msg");
+			elMsg.innerText = msg;
+			elMsg.style.display = "block";
+			setTimeout(function(){
+				elMsg.style.display = "none";
+			}, 3000)
+		}
+
+			function myMap() {
+				var mapProp= {
+					center:new google.maps.LatLng(51.508742,-0.120850),
+					zoom:5,
+				};
+				var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+			}
+		function draw(){
+			var str = "";
+			for(let i in lista.produse){
+				if(lista.produse[i]===null){continue;}
+				str+=`
+					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" style=" border:solid gray 1px; float:left; background-color:white;">
+						
+							<div class="image" style="background-image:url(${lista.produse[i].imagine}); display:flex; flex-direction:row-reverse; float:left;"></div>
+							<div style="font-weight:bold;align-item:left; margin-top:20%;margin-left:0px;">${lista.produse[i].nume}</div> <br>
+							<div style="align-item:left;margin:left:0px;">Pret: ${lista.produse[i].pret} RON</div> <br>
+							<a href="magazinproduse.html?produse=${i}"><button>Detalii</button></a>
+							<button onclick="addinlocal('${i}');">Adauga in cos</button>
+						
+							
+					
+					</div>
+				`
+			}
+			document.querySelector(".listaProduse").innerHTML=str;
+			
+		}
+
+		function unitsInCart() {
+			
+			
+
+		}
+    </script>
+</head>
+<body onload="get();">
+	<div id="msg" style="padding:5px;text-align: center; background: gray; color: white;display:none;">Test msg</div>
+
+	<h2>Magazinul tau</h2>
+
+	<div>
+
+<img src="data:image/jpeg;base64,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" style="width: 100%; height: 30%;">
+
+	</div>
+				
+	<br>
+	
+	<button class="btncos" onclick="location.href='cos de cumparaturi.html'" type="button">Cos de cumparaturi <span id="nr" class="hidden">x</span></button>
+	<button class="btnadmin" onclick="location.href='admin.html'" type="button">Admin</button>
+	<br>
+	<br>
+
+	<div id="loader" style="display: none; ">
+		<svg class="lds-default" width="100px" height="100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="75" cy="50" fill="undefined" r="3">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.917s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.917s"></animate>
+		</circle><circle cx="71.651" cy="62.5" fill="undefined" r="3">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.833s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.833s"></animate>
+		</circle><circle cx="62.5" cy="71.651" fill="undefined" r="3">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.75s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.75s"></animate>
+		</circle><circle cx="50" cy="75" fill="undefined" r="3">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.667s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.667s"></animate>
+		</circle><circle cx="37.5" cy="71.651" fill="undefined" r="3">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.583s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.583s"></animate>
+		</circle><circle cx="28.349" cy="62.5" fill="undefined" r="3.14295">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.5s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.5s"></animate>
+		</circle><circle cx="25" cy="50" fill="undefined" r="3.80695">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.417s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.417s"></animate>
+		</circle><circle cx="28.349" cy="37.5" fill="undefined" r="4.47895">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.333s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.333s"></animate>
+		</circle><circle cx="37.5" cy="28.349" fill="undefined" r="4.85705">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.25s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.25s"></animate>
+		</circle><circle cx="50" cy="25" fill="undefined" r="4.19305">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.167s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.167s"></animate>
+		</circle><circle cx="62.5" cy="28.349" fill="undefined" r="3.52105">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="-0.083s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="-0.083s"></animate>
+		</circle><circle cx="71.651" cy="37.5" fill="undefined" r="3">
+			<animate attributeName="r" values="3;3;5;3;3" times="0;0.1;0.2;0.3;1" dur="1s" repeatCount="indefinite" begin="0s"></animate>
+			<animate attributeName="fill" values="#e0b83e;#e0b83e;#bd4030;#e0b83e;#e0b83e" repeatCount="indefinite" times="0;0.1;0.2;0.3;1" dur="1s" begin="0s"></animate>
+		</circle></svg>
+		</div>
+		
+		
+		<div class='response'></div>
+	
+
+
+
+	<div class="listaProduse"></div>
+	<div style="height: 100px;"></div>
+	<div id="contact">
+		<p>Date de contact<br>
+		Adresa: Strada Iancu de Hunedoara, nr 12, Bucuresti<br>
+		Telefon: 0235.426.528
+
+		</p>
+		<div id="googleMap"></div>
+
+
+	</div>
+
+
+
+</body>
+</html>

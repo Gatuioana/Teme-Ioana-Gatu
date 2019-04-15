@@ -1,0 +1,148 @@
+<html>
+<head>
+		<link rel="stylesheet" type="text/css" href="magazin.css">
+		
+    <script>
+        var lista=[];
+		var idxEdit = null;
+
+		function get(){
+			fetch('https://awesome-c1c34.firebaseio.com/.json')
+			  .then(response => response.json())
+			  .then(data => {
+					lista=data;
+					draw();
+			  })
+		}
+        function del(idx){
+			if(confirm(`esti sigur ca vrei sa stergi ${lista.produse[idx].nume}?`)){
+				ajax("DELETE", `https://awesome-c1c34.firebaseio.com/produse/${idx}.json`,undefined,function(){
+					 get();
+				});
+			}
+		}
+
+		function add(){
+			var el = {};
+			el.nume = document.querySelector('[name="name"]').value;
+			el.imagine = document.querySelector('[name="link"]').value;
+			el.descriere = document.querySelector('[name="description"]').value;
+			el.stoc = document.querySelector('[name="stoc"]').value;
+			el.pret = parseInt(document.querySelector('[name="pret"]').value);
+			if(idxEdit===null){
+				ajax("POST", `https://awesome-c1c34.firebaseio.com/produse/.json`,JSON.stringify(el),get);
+			}else{
+				ajax("PUT", `https://awesome-c1c34.firebaseio.com/produse/${idxEdit}.json`,JSON.stringify(el),function(){
+					get();
+					idxEdit = null;
+				});
+			}
+		}
+
+
+		
+
+        function ajax(method,url,body,callback, rejectCallback){
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState === 4){
+					if(this.status === 200) {
+						if(typeof callback==="function"){
+							callback(JSON.parse(this.responseText));
+						}
+					} else {
+						if(typeof rejectCallback==="function"){
+							rejectCallback(new Error("serverul a dat eroare"));
+						}
+					}
+				}
+			};
+			xhttp.open(method, url, true);
+			xhttp.send(body);
+		}
+
+		function edit(idx){
+			showAddForm();
+			idxEdit = idx;
+			var el = lista.produse[idx];
+			document.querySelector('[name="name"]').value = el.nume;
+			document.querySelector('[name="link"]').value = el.imagine;
+			document.querySelector('[name="description"]').value= el.descriere;
+			document.querySelector('[name="pret"]').value = el.pret;
+			document.querySelector('[name="stoc"]').value = String(el.stoc);
+		}
+	
+		
+		function draw(){
+			var str = "";
+			for(let i in lista.produse){ if(lista.produse[i]===null){continue;}
+				str+=`
+					<div class="col-lg-12 col-md-12 col-sm-12 " style=" border:solid gray; display: flex; justify-content: space-around; margin:5px;">
+						
+							<div class="image" style="background-image:url(${lista.produse[i].imagine})"></div>
+							<div style="font-weight:bold;">${lista.produse[i].nume}</div>
+							<div>${lista.produse[i].pret} RON</div>
+							<a href="magazinproduse.html?produse=${i}"><button>Detalii</button></a>
+							<div class="editBtn" onclick="edit('${i}');"></div>
+							<div class="deleteBtn" onclick="del('${i}');"></div>
+							
+					
+					</div>
+				`
+			}
+			document.querySelector(".listaProduse").innerHTML=str;
+			
+		}
+
+		function showAdmin(){
+			
+			idxEdit = null;
+			document.querySelector("form").style.display="none";
+			document.querySelector(".listaProduse").style.display="";
+			document.querySelector(".produsnou").style.display="";
+			
+		}
+		
+		function showAdmin1(){
+		
+		document.querySelector("form").style.display="none";
+		document.querySelector(".listaProduse").style.display="";
+		document.querySelector(".produsnou").style.display="";
+		idxEdit = null;
+	}
+		
+	
+		function showAddForm(){
+			document.querySelector("form").reset();
+			document.querySelector("form").style.display="";
+			document.querySelector(".listaProduse").style.display="none";
+			document.querySelector(".produsnou").style.display="none";
+		}
+    </script>
+</head>
+<body onload="get()">
+    <h2 onclick="location.href='magazin.html'">Magazinul tau</h2>
+    <h3>Gestionare produse</h3>
+	<button class="btncos" onclick="location.href='cos de cumparaturi.html'" type="button">Cos de cumparaturi</button>
+	<button class="produsnou" onclick="showAddForm();">Adauga produs nou</button>
+
+	<form onsubmit="event.preventDefault();add();" style="display:none;">
+		<label>Nume produs:<input type="text" name="name" /></label><br />
+		<label>Imagine:<input type="text" name="link" /></label><br />
+		<label>Descriere:<textarea name="description"></textarea></label><br/>
+		<label>Pret:<input type="number" name="pret"/></label><br />
+		<label>Stoc:<input type="number" name="stoc" /></label><br />
+		</label><br/>
+		<input type="button" value="Salveaza modificarile" onclick="add();showAdmin1();">
+		<input type="submit" value="Salveaza produs nou" onclick="showAdmin();">
+		<input type="button" value="Cancel" onclick="showAdmin();"/>
+	</form>
+
+	
+	
+	<div class="listaProduse"></div>
+
+
+
+</body>
+</html>

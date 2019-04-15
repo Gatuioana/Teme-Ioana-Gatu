@@ -1,0 +1,170 @@
+<html>
+<head>
+	<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+	<style>
+	h2:hover{
+		background-color: grey;
+		cursor: pointer;
+
+	}
+	</style>
+	<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+ 
+    <script>
+
+	function carusel(){
+			var elem = document.querySelector('.main-carousel');
+			var flkty = new Flickity( elem, {
+  												contain: true,
+												"autoPlay": true,
+												freeScroll: true,
+												wrapAround: true
+											});
+
+		} 
+
+        let id = window.location.search.split(/=/g)[1];
+		let url = `https://awesome-c1c34.firebaseio.com/produse/${id}.json`;
+		fetch(url)
+			  .then(response => response.json())
+			  .then(produse => {
+					document.querySelector("#imagine").src= produse.imagine;
+					document.querySelector("#nume").innerHTML= produse.nume;
+					document.querySelector("#pret").innerHTML= "Pret: <span id='pretval'>" + produse.pret +"</span> RON";
+                    document.querySelector("#descriere").innerHTML=produse.descriere;
+                    document.querySelector("#stoc").innerHTML= produse.stoc;
+			  })
+
+
+
+		function enter(event){
+			if (event.keyCode === 13) {
+				addinlocal();
+			}
+		}
+
+
+
+		function addinlocal(){
+			
+			
+			if (typeof(Storage) !== "undefined") {
+				let cosJson = localStorage.getItem("cos");
+				if(cosJson === undefined || cosJson == null){
+					cosJson = "{}";	
+				}
+				let cos = JSON.parse(cosJson);//converteste in obiect
+
+				let el = {};
+				el.nume = document.getElementById("nume").innerText;
+				el.imagine = document.getElementById("imagine").src;
+				el.cantitate = parseInt(document.getElementById("qty").value);
+				el.pret = document.getElementById("pretval").innerText;
+				el.id = id;
+				if(cos[id] !== undefined){
+					let stoc = document.getElementById("stoc").innerText;
+					cos[id].cantitate += el.cantitate;
+					if(cos[id].cantitate > parseInt(stoc)){
+						cos[id].cantitate = parseInt(stoc);
+					}
+				} else {
+					cos[id] = el;
+				}
+  				localStorage.setItem("cos", JSON.stringify(cos)); //il face din obiect Json
+				showMessage("Produsul a fost adaugat in cos");
+			} else {
+  			alert("eroare");
+			}
+		}
+		
+
+		function enter(event){
+			if (event.keyCode === 13) {
+				addinlocal();
+			}
+		}
+
+
+		function modifyStock(sign){
+			let valueBox = document.getElementById("qty");
+			let stoc = document.getElementById("stoc");
+			if(sign === "-" && valueBox.value > 0){
+				 valueBox.value--;
+			} else if(sign === "+" && parseInt(valueBox.value) < parseInt(stoc.innerText)){
+				valueBox.value++;
+			}
+		}
+		function showMessage(msg){
+			let elMsg = document.getElementById("msg");
+			elMsg.innerText = msg;
+			elMsg.style.display = "block";
+			setTimeout(function(){
+				elMsg.style.display = "none";
+			}, 3000)
+		}
+		function checkStock(){
+			let valueBox = document.getElementById("qty").value;
+			let stoc = document.getElementById("stoc").innerText;
+			if(parseInt(valueBox) > parseInt(stoc)){
+				document.getElementById("qty").value = stoc;
+				showMessage("Cantitatea selectata depaseste stocul disponibil");
+			}
+		}
+
+    </script>
+</head>
+<body onload="carusel();">
+	<div id="msg" style="padding:5px;text-align: center; background: gray; color: white;display:none;">Text msg</div>
+	<h2 onclick="location.href='magazin.html'">Magazinul meu</h2>
+	<div style="float:left; display:inline-block;">
+	<img id="imagine"/> </div>
+	<div style="max-width:50%;">
+	<div id="nume" style="font-weight: bold"></div>
+	<div id="descriere">Descriere:</div>
+    <div id="pret">Pret:</div>
+	<span>Stoc:</span><span id="stoc"></span>
+	<br>
+	<form name="f1">
+		<input type='button' name='subtract' onclick='modifyStock("-")' value='-'/>
+		<input type='number' name='qty' id='qty' onkeyup="checkStock()" onkeypress="enter(event)";/>
+		<input type='button' name='add' onclick='modifyStock("+")' value='+'/>
+		
+	</form>
+	<button onclick="addinlocal();">Adauga in cos</button>
+</div>
+</div>
+<br>
+<div style="height: 10%"></div>
+<div>
+	<p><b>Produse care te-ar putea interesa:</b></p>
+	<br>
+
+
+	<div class="main-carousel">
+				
+			<div class="carousel-cell">
+				<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTv7rQqGp7GyEtM94mjyzymTHOUPq_aqiXADzTAMYx9K2m-buT3tA" alt="Allview" onclick="location.href='magazin.html'"/>
+			</div>
+
+			<div class="carousel-cell">
+				<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRz9jQMGMAYMB-I2YgS9b1CwT6NjaBiSdtRJEUs2fZ0ms5O86Fw" alt="Iphone" onclick="location.href='magazin.html'"/>
+			</div>
+		
+			<div class="carousel-cell">
+				<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ3nHjcX3DjOImruO_VDoKEuEyCNyc9NT7qAMUfuYPVkm_fxJ0" alt="Iphone6" onclick="location.href='magazin.html'"/>
+			</div>
+			<div class="carousel-cell">
+					<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNCT_UukhgOYB8BzrzU5RhSNjsNdgjVzXDtLHBQiUTRyYbRC2QbQ" alt="Huawei Mate" onclick="location.href='magazin.html'"/>
+				</div>
+			<div class="carousel-cell">
+					<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTReRapm5SOZtKdqZmp77DLuY8ZmvKCWSPy3BXdTIixbKjAYSR0" alt="Ztd Blade" onclick="location.href='magazin.html'"/>
+			</div>
+	
+		
+		
+		</div>
+
+	
+</div>
+</body>
+</html>
