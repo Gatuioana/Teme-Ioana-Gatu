@@ -1,0 +1,59 @@
+<html>
+<head>
+    <style>
+        body{
+            background-image: url("medicamente-oncologice-lista-gratuite2019.jpg");
+            background-repeat: no-repeat;
+            background-size: 100%;
+            
+        }
+        </style>
+    <script src="https://www.gstatic.com/firebasejs/6.0.1/firebase.js"></script>
+        <script>
+        const firebaseConfig = {
+  apiKey: "AIzaSyBDtq3hEmBQCaA-lCkht8qKyEG_48TTC2s",
+  authDomain: "oncomed-1be64.firebaseapp.com",
+  databaseURL: "https://oncomed-1be64.firebaseio.com",
+  projectId: "oncomed-1be64",
+  storageBucket: "oncomed-1be64.appspot.com",
+  messagingSenderId: "525574472993",
+  appId: "1:525574472993:web:08e1df9daf4a37a3"
+};
+firebase.initializeApp(firebaseConfig);
+
+</script>
+        <script src="https://cdn.firebase.com/libs/firebaseui/4.0.0/firebaseui.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/4.0.0/firebaseui.css" />
+        <script type="text/javascript">
+            // FirebaseUI config.
+            var uiConfig = {
+              signInSuccessUrl: 'listacereri1.html',
+              signInOptions: [
+                // Leave the lines as is for the providers you want to offer your users.
+                
+                firebase.auth.EmailAuthProvider.PROVIDER_ID
+              ],
+              // tosUrl and privacyPolicyUrl accept either url string or a callback
+              // function.
+              // Terms of service url/callback.
+              tosUrl: '<your-tos-url>',
+              // Privacy policy url/callback.
+              privacyPolicyUrl: function() {
+                window.location.assign('<your-privacy-policy-url>');
+              }
+            };
+      
+            // Initialize the FirebaseUI Widget using Firebase.
+            var ui = new firebaseui.auth.AuthUI(firebase.auth());
+            // The start method will wait until the DOM is loaded.
+            ui.start('#firebaseui-auth-container', uiConfig);
+          </script>
+        </head>
+        <body>
+          <!-- The surrounding HTML is left untouched by FirebaseUI.
+               Your app may use that space for branding, controls and other customizations.-->
+          <h1>Welcome to OncoMed</h1>
+          <h2>Admin Page</h2>
+          <div id="firebaseui-auth-container"></div>
+        </body>
+</html>

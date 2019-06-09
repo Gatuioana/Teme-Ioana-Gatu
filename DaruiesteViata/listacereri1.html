@@ -1,0 +1,235 @@
+<html>
+
+<head>
+    <style>
+        .editBtn {
+            display: inline-block;
+            
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+           
+
+        }
+        #a{
+            content:url("logo OncoMed.png");
+            display: inline-block;
+            float: right;
+            height: 150px;
+            width: 150 px;
+        }
+
+        #b{
+            text-align: left;
+            display: inline-block;
+        }
+    </style>
+    <script>
+        var idx;
+        var idxEdit = null;
+        var propSortare;
+        var directieSortare;
+        function get() {
+            db.collection("request").get().then(async (requests) => {
+                requests = requests.docs;
+                var promise = [];
+                for (let i = 0; i < requests.length; i++) {
+                    let doc = requests[i];
+                    promise.push(getRequestInfo(doc));
+                }
+                var requestsData = await Promise.all(promise);
+                window.lista=requestsData;
+                draw();
+            });
+
+        }
+
+        async function getVoluntari(){
+            return db.collection("volunteer").get().then((v)=>{
+                v=v.docs;
+                var str="";
+                for(var i=0; i<v.length; i++){
+                    str+=`<option value="${v[i].id}"> ${v[i].data().name} </option>`
+                }
+                document.querySelector("[name='voluntar'] ").innerHTML=str;
+            })
+
+        }
+
+        function draw() {
+            var str = "";
+            for (var i = 0; i < lista.length; i++) {
+                if (lista[i].request === null) {
+                    continue;
+                }
+
+                str += `
+				<tr>
+					<td class="name">${lista[i].request.pacientFirstName+" "+lista[i].request.pacientLastName}</td>
+					<td class="substanta">${lista[i].request.drugActiveSubstance}</td>
+					<td class="denumire">${lista[i].request.drugName}</td>
+                    <td class="cantitate">${lista[i].request.quantity}</td>
+                    <td class="voluntar">${lista[i].request.volunteerName}</td>
+                    <td class="status">${lista[i].request.status}</td>
+					<td style="white-space:nowrap;">
+						<button class="editBtn" onclick='edit("${i}");'>Detalii</button>
+					</td>
+				</tr>
+			`;
+            }
+
+            document.querySelector("table tbody").innerHTML = str;
+
+            showTable();
+        }
+        function showTable() {
+            idxEdit = null;
+            document.querySelector("form").style.display="none";
+            document.querySelector("table").style.display = "";
+        }
+
+        async function edit(idx){
+			await showAddForm();
+			idxEdit = idx;
+			var el = lista[idx].request;
+			document.querySelector('[name="name"]').innerText = el.pacientFirstName + " "+ el.pacientLastName;
+			document.querySelector('[name="voluntar"]').value = el.volunteerId;
+			document.querySelector('[name="schimbaStatus"]').value= el.status;
+			document.querySelector('[name="observatii"]').value = el.comment||"";
+		
+		}
+
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.1/firebase.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDtq3hEmBQCaA-lCkht8qKyEG_48TTC2s",
+            authDomain: "oncomed-1be64.firebaseapp.com",
+            databaseURL: "https://oncomed-1be64.firebaseio.com",
+            projectId: "oncomed-1be64",
+            storageBucket: "oncomed-1be64.appspot.com",
+            messagingSenderId: "525574472993",
+            appId: "1:525574472993:web:08e1df9daf4a37a3"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+
+
+        async function getRequestInfo(doc) {
+            const request = doc.data();
+            
+            return {
+                id_request:doc.id,
+                request: request,
+            }
+        }
+
+        async function showAddForm(){
+			document.querySelector("form").reset();
+			document.querySelector("form").style.display="";
+			document.querySelector("table").style.display="none";
+            await getVoluntari();
+		}
+
+        function update(){
+            var voluntarSelect=document.querySelector("[name='voluntar']");
+            db.collection("request").doc(lista[idxEdit].id_request).update({
+    volunteerId: voluntarSelect.value,
+    volunteerName: voluntarSelect.options[voluntarSelect.selectedIndex].text,
+    status:document.querySelector("[name='schimbaStatus']").value,
+    comment:document.querySelector("[name='observatii']").value
+})
+.then(function() {
+    console.log("Document successfully written!");
+})
+.catch(function(error) {
+    console.error("Error writing document: ", error);
+});
+        }
+
+
+
+
+		
+		function showAdmin1(){
+		
+		document.querySelector("form").style.display="none";
+		document.querySelector("table").style.display="";
+		document.querySelector(".produsnou").style.display="";
+		idxEdit = null;
+	}
+
+    function showAdmin(){
+			
+			idxEdit = null;
+			document.querySelector("form").style.display="none";
+			document.querySelector("table").style.display="";
+			document.querySelector(".produsnou").style.display="";
+			
+		}
+
+        function sorteaza(prop){  console.log(lista);
+        if(propSortare==prop){lista.reverse();} else{
+		lista.sort(function(a,b){
+			if(a.request[prop]>b.request[prop]){
+				return 1;
+			} else if(a.request[prop]<b.request[prop]){
+				return -1;
+			}else {
+				return 0
+			}
+		}); propSortare=prop;}
+        console.log(lista);
+		draw();
+	}
+    </script>
+</head>
+
+<body onload="get();">
+    <div id="b">
+    <h2 onclick="location.href='listacereri1.html'">Centralizare necesar:</h2></div>
+    <div id="a"></div>
+
+    <form onsubmit="event.preventDefault(); update();" style="display:none;">
+            <label>Nume pacient:<span name="name"></span> </label><br />
+            <label>Schimba voluntar:
+                    <select name="voluntar">
+                    </select>
+                </label><br />
+            <label>Schimba status:
+                <select name="schimbaStatus">
+                    <option>Cerere in asteptare</option>
+                    <option>Cerere preluata</option>
+                    <option>Cerere validata</option>
+                    <option>Documente incomplete</option>
+                    <option>Medicament identificat</option>
+                    <option>Medicament comandat</option>
+                    <option>In curs de livrare</option>
+                    <option>Medicament livrat</option>
+                </select>
+            </label><br />
+            <label>Observatii:<textarea type="text" name="observatii"></textarea></label>
+            <input type="button" value="Salveaza modificarile" onclick="update();showAdmin1();">
+            <input type="button" value="Cancel" onclick="showAdmin();"/>
+        </form>
+    
+    <table border="1" style="width: 100%;">
+        <thead>
+            <tr>
+                <th style="width:15%;" onclick="sorteaza('pacientFirstName');">Nume pacient</th>
+                <th style="width:15%;"onclick="sorteaza('drugActiveSubstance');">Substanta activa</th>
+                <th style="width:15%;">Denumire comerciala</th>
+                <th style="width:15%;">Unitati necesare</th>
+                <th style="width:15%;" onclick="sorteaza('volunteerName');">Voluntar</th>
+                <th style="width:15%;" onclick="sorteaza('status');">Status</th>
+                <th style="width:15%;"></th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+</body>
+
+</html>
