@@ -1,0 +1,213 @@
+<html>
+<head>
+	<script>
+
+
+		
+		var id_modificare = -1;
+
+		function isDigits(str){
+			for(var i=0;i<str.length;i++){
+				if(str[i]<"0" ||str[i]>"9"){
+					return false;
+				}
+			}
+			return true;
+		}
+		function valideaza(elem,event){
+			var numeEl = document.querySelector('[name="nume"]');
+			var telefonEl = document.querySelector('[name="telefon"]');
+		
+			var nume = numeEl.value;
+			var telefon = telefonEl.value;
+			
+			if(nume.length<3){
+				numeEl.classList.add("invalid");
+				return false;
+			}else{
+				numeEl.classList.remove("invalid");
+			}
+			
+			if(telefon.length!==10 || telefon.indexOf("07")!==0 || !isDigits(telefon)){
+				telefonEl.classList.add("invalid");
+				return false;
+			}else{
+				telefonEl.classList.remove("invalid");
+			}
+			return true;
+		}
+		function noDigits(elem,event){
+			if(event.key>="0" && event.key<="9"){
+				event.preventDefault();
+			}
+		}
+		function enter(event){
+			if (event.keyCode === 13) {
+				add();
+			}
+		}
+		var persoane = [
+			{
+				nume:"Ion",
+				telefon:"0747027678"
+
+			}
+		];
+        function add(){
+			event.preventDefault();
+			if(!valideaza()){
+				return;
+			}
+			var nume = document.querySelector('[name="nume"]').value;
+			var telefon = document.querySelector('[name="telefon"]').value;
+			if(id_modificare > -1){
+				persoane[id_modificare].nume = nume;
+				persoane[id_modificare].telefon = telefon;
+				id_modificare = -1;
+			} else{
+				var newPersoane={
+					nume,
+					telefon
+				};
+				persoane.push(newPersoane);
+			}
+			document.querySelector('[name="nume"]').value = "";
+			document.querySelector('[name="telefon"]').value = "";
+			draw();
+		}
+
+	
+	function draw(){
+		var str = '';
+		for(var i=0;i<persoane.length;i++){
+			str += `
+			<tr>
+		
+				<td>${persoane[i].nume}</td>
+				<td>${persoane[i].telefon}</td>
+				<td>
+						<div class="editBtn" onclick="edit(${i});">Editeaza</div>
+						<div class="deleteBtn" onclick="del(${i});"> Sterge</div>
+				</td>
+		
+			</tr>
+			`;
+			
+		}
+		document.querySelector("table tbody").innerHTML=str;
+	}
+
+
+	function del(idx){
+		if(confirm(`esti sigur ca vrei sa-l stergi pe ${persoane[idx].nume}?`)){
+			persoane.splice(idx,1);
+			draw();
+		}
+	}
+
+
+
+	function edit(idx){
+			document.querySelector('[name="nume"]').value = persoane[idx].nume;
+			document.querySelector('[name="telefon"]').value = persoane[idx].telefon;
+			id_modificare = idx;
+			draw();
+	}
+		
+
+	</script>
+	<style>
+		.hidden{
+			display:none;
+		}
+		.invalid{
+			border-color:red;
+		}
+        #tabel{
+			border-collapse:collapse;
+			display: inline;
+			width: 100%;
+		}
+		td,th {
+    	padding: 10px;
+		text-align: center;
+		}
+		h1 {text-align: center; }
+		#primul {
+			height:100px;
+			width: 600px;
+			background-color:#edd312;
+			border-radius: 20px;
+			margin: 20px;
+			display:inline-block;
+		
+		
+		}
+		
+		#aldoilea {
+			height:auto;
+			width: 600px;
+			background-color:#edd312;
+			border-radius: 20px;
+			margin: 20px;
+			display: inline-block;
+		}
+		body {
+    
+    	text-align: center;
+    	font-size: 15px;
+    	margin:15px;
+    	padding: 5px;
+    	box-sizing: border-box;
+    	padding: 8px 16px;
+    	text-align: center;
+		}
+
+		.deleteBtn{
+			display:inline-block;
+			background-position:center;
+			text-decoration: underline;
+			cursor: context-menu;
+	
+		}
+		.editBtn{
+			display:inline-block;
+			background-position:center;
+			text-decoration: underline;
+			margin-inline-end: 15px;
+			cursor: context-menu;
+		}
+	</style>
+</head>
+<body onload="draw();">
+<h1> Agenda</h1>
+<div id="primul">
+	<form>
+				<label>
+					<span> <b>Nume: </b> </span>
+					<input type="text" name="nume" onkeydown="noDigits(this,event);" />
+                </label>
+				<label for="telefon"><b>Telefon:</b> </label>
+                <input id="telefon" type="text" name="telefon" placeholder='07-- --- ---' onkeypress="enter(event)"/>
+				<br>
+				<div>
+                <input type="submit" style="margin-top: 10px; background-color: blue; color: white; border-radius: 5px;" name="submit" value="ADAUGA CONTACT" onclick="add();"/>
+				</div>
+		
+		
+    </form>
+    
+</div><br/>
+    <div id="aldoilea">
+        <table id="tabel">
+		<thead>
+        <th>Nume</th>
+        <th>Telefon</th>
+		</thead>
+		<tbody>
+		</tbody>
+</table>
+    </div>
+	
+</body>
+</html>
